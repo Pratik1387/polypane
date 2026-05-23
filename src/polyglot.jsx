@@ -103,7 +103,7 @@ function LanguageSelector({ current, onSelect, usedCodes, isInput }) {
         onClick={() => setOpen(!open)}
         style={{
           display: "flex", alignItems: "center", gap: 8,
-          background: "rgba(255,255,255,0.08)", border: `1.5px solid ${lang.color}44`,
+          background: "rgba(0,0,0,0.85)", border: `1.5px solid ${lang.color}44`,
           borderRadius: 10, padding: "6px 12px", cursor: "pointer",
           color: "#fff", fontSize: 13, fontFamily: "'Sora', sans-serif",
           transition: "all 0.2s",
@@ -116,7 +116,7 @@ function LanguageSelector({ current, onSelect, usedCodes, isInput }) {
       {open && (
         <div style={{
           position: "absolute", top: "calc(100% + 6px)", left: 0, zIndex: 100,
-          background: "#1a1a2e", border: "1px solid rgba(255,255,255,0.1)",
+          background: "#1a1a2e", border: "1px solid rgba(0,0,0,0.85)",
           borderRadius: 12, padding: 6, minWidth: 170,
           boxShadow: "0 20px 60px rgba(0,0,0,0.6)",
           maxHeight: 280, overflowY: "auto",
@@ -133,13 +133,13 @@ function LanguageSelector({ current, onSelect, usedCodes, isInput }) {
                   width: "100%", background: l.code === current ? `${l.color}22` : "transparent",
                   border: "none", borderRadius: 8, padding: "8px 10px",
                   cursor: disabled ? "not-allowed" : "pointer",
-                  color: disabled ? "rgba(255,255,255,0.25)" : "#fff",
+                  color: disabled ? "rgba(0,0,0,0.85)" : "#fff",
                   fontSize: 13, fontFamily: "'Sora', sans-serif", textAlign: "left",
                   transition: "background 0.15s",
                 }}
               >
                 <span>{l.flag}</span>
-                <span style={{ color: disabled ? "rgba(255,255,255,0.25)" : l.color, fontWeight: 600 }}>{l.name}</span>
+                <span style={{ color: disabled ? "rgba(0,0,0,0.85)" : l.color, fontWeight: 600 }}>{l.name}</span>
               </button>
             );
           })}
@@ -158,7 +158,7 @@ function LangWindow({ win, windows, inputText, onLangChange, onSetInput, onTextC
 
   return (
     <div style={{
-      background: "rgba(255,255,255,0.03)",
+      background: "rgba(0,0,0,0.85)",
       border: `1.5px solid ${lang.color}33`,
       borderRadius: 18,
       display: "flex", flexDirection: "column",
@@ -216,9 +216,9 @@ function LangWindow({ win, windows, inputText, onLangChange, onSetInput, onTextC
             style={{
               width: "100%", height: "100%", minHeight: 120,
               background: "transparent", border: "none", outline: "none",
-              color: "#fff", fontSize: 16, fontFamily: "'Sora', sans-serif",
+              color: "#1A1A2E", fontSize: 16, fontFamily: "'Space Grotesk', sans-serif",
               resize: "none", lineHeight: 1.7,
-              "::placeholder": { color: "rgba(255,255,255,0.2)" },
+              "::placeholder": { color: "rgba(0,0,0,0.85)" },
             }}
           />
         ) : (
@@ -239,7 +239,7 @@ function LangWindow({ win, windows, inputText, onLangChange, onSetInput, onTextC
                   color: "#fff", fontSize: 16, lineHeight: 1.7,
                   fontFamily: "'Sora', sans-serif", margin: 0,
                 }}>
-                  {displayText || <span style={{ color: "rgba(255,255,255,0.2)" }}>Translation appears here...</span>}
+                  {displayText || <span style={{ color: "rgba(0,0,0,0.85)" }}>Translation appears here...</span>}
                 </p>
                 {result.pronunciation && (
                   <p style={{
@@ -387,16 +387,16 @@ export default function PolyPane() {
           100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); }
         }
         * { box-sizing: border-box; }
-        textarea::placeholder { color: rgba(255,255,255,0.2) !important; }
+        textarea::placeholder { color: rgba(0,0,0,0.85) !important; }
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.85); border-radius: 4px; }
       `}</style>
 
       {/* Header */}
       <div style={{
         padding: "28px 32px 20px",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
+        borderBottom: "1px solid rgba(0,0,0,0.85)",
         display: "flex", alignItems: "center", justifyContent: "space-between",
         animation: "fadeIn 0.5s ease",
       }}>
@@ -417,9 +417,9 @@ export default function PolyPane() {
         <div style={{ display: "flex", gap: 10 }}>
           {inputText && (
             <button onClick={handleClear} style={{
-              background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)",
+              background: "rgba(0,0,0,0.85)", border: "1px solid rgba(0,0,0,0.85)",
               borderRadius: 10, padding: "8px 16px", cursor: "pointer",
-              color: "rgba(255,255,255,0.5)", fontSize: 13, fontFamily: "'Sora', sans-serif",
+              color: "rgba(0,0,0,0.85)", fontSize: 13, fontFamily: "'Sora', sans-serif",
             }}>
               ✕ Clear
             </button>
@@ -428,8 +428,8 @@ export default function PolyPane() {
             onClick={handleVoice}
             title="Voice input"
             style={{
-              background: isListening ? "rgba(239,68,68,0.15)" : "rgba(255,255,255,0.05)",
-              border: isListening ? "1.5px solid #EF4444" : "1px solid rgba(255,255,255,0.1)",
+              background: isListening ? "rgba(239,68,68,0.15)" : "rgba(0,0,0,0.85)",
+              border: isListening ? "1.5px solid #EF4444" : "1px solid rgba(0,0,0,0.85)",
               borderRadius: 10, padding: "8px 18px", cursor: "pointer",
               color: isListening ? "#EF4444" : "rgba(255,255,255,0.6)",
               fontSize: 13, fontFamily: "'Sora', sans-serif", fontWeight: 600,
@@ -445,7 +445,7 @@ export default function PolyPane() {
 
       {/* Subtitle tip */}
       <div style={{ padding: "12px 32px 0", animation: "fadeIn 0.6s ease" }}>
-        <p style={{ margin: 0, fontSize: 12, color: "rgba(255,255,255,0.2)" }}>
+        <p style={{ margin: 0, fontSize: 12, color: "rgba(0,0,0,0.85)" }}>
           💡 Click <strong style={{ color: "rgba(255,255,255,0.35)" }}>✏️ Type here</strong> on any window to switch your input language &nbsp;·&nbsp; 🔊 Click <strong style={{ color: "rgba(255,255,255,0.35)" }}>Listen</strong> to hear pronunciation
         </p>
       </div>
