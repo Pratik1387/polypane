@@ -82,7 +82,7 @@ function LanguageSelector({ current, onSelect, usedCodes }) {
         display: "flex", alignItems: "center", gap: 8,
         background: "rgba(255,255,255,0.08)", border: `1.5px solid ${lang.color}44`,
         borderRadius: 10, padding: "6px 12px", cursor: "pointer",
-        color: "#fff", fontSize: 13, fontFamily: "'Sora', sans-serif", transition: "all 0.2s",
+        color: "#1A1A2E", fontSize: 13, fontFamily: "'Sora', sans-serif", transition: "all 0.2s",
       }}>
         <span style={{ fontSize: 18 }}>{lang.flag}</span>
         <span style={{ color: lang.color, fontWeight: 600 }}>{lang.name}</span>
@@ -268,18 +268,18 @@ export default function PolyPane() {
       fontFamily: "'Space Grotesk', sans-serif", padding: "0 0 40px",
     }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
         @keyframes bounce { 0%,80%,100%{transform:scale(0.6);opacity:0.4} 40%{transform:scale(1);opacity:1} }
         @keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
         @keyframes pulse-ring { 0%{box-shadow:0 0 0 0 rgba(239,68,68,0.4)} 70%{box-shadow:0 0 0 12px rgba(239,68,68,0)} 100%{box-shadow:0 0 0 0 rgba(239,68,68,0)} }
         *{box-sizing:border-box}
-        textarea{caret-color:white}
-        textarea::placeholder{color:rgba(255,255,255,0.2)!important}
+        textarea{caret-color:#1A1A2E}
+        textarea::placeholder{color:rgba(0,0,0,0.25)!important}
         ::-webkit-scrollbar{width:4px}
         ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:4px}
       `}</style>
       <div style={{
-        padding: "28px 32px 20px", borderBottom: "1px solid rgba(255,255,255,0.06)",
+        padding: "28px 32px 20px", borderBottom: "1px solid rgba(0,0,0,0.08)",
         display: "flex", alignItems: "center", justifyContent: "space-between", animation: "fadeIn 0.5s ease",
       }}>
         <div>
@@ -288,23 +288,23 @@ export default function PolyPane() {
             background: "linear-gradient(90deg, #3B82F6, #8B5CF6, #EC4899)",
             WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
           }}>PolyPane</h1>
-          <p style={{ margin: "4px 0 0", fontSize: 13, color: "rgba(255,255,255,0.35)" }}>
+          <p style={{ margin: "4px 0 0", fontSize: 13, color: "rgba(0,0,0,0.45)" }}>
             Type once. See 4 languages instantly. — 100% Free, No API Key
           </p>
         </div>
         <div style={{ display: "flex", gap: 10 }}>
           {inputText && (
             <button onClick={() => { setInputText(""); setTranslations({}); }} style={{
-              background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)",
+              background: "rgba(0,0,0,0.04)", border: "1px solid rgba(0,0,0,0.1)",
               borderRadius: 10, padding: "8px 16px", cursor: "pointer",
-              color: "rgba(255,255,255,0.5)", fontSize: 13, fontFamily: "'Sora', sans-serif",
+              color: "rgba(0,0,0,0.5)", fontSize: 13, fontFamily: "'Sora', sans-serif",
             }}>✕ Clear</button>
           )}
           <button onClick={handleVoice} style={{
             background: isListening ? "rgba(239,68,68,0.15)" : "rgba(255,255,255,0.05)",
             border: isListening ? "1.5px solid #EF4444" : "1px solid rgba(255,255,255,0.1)",
             borderRadius: 10, padding: "8px 18px", cursor: "pointer",
-            color: isListening ? "#EF4444" : "rgba(255,255,255,0.6)",
+            color: isListening ? "#EF4444" : "rgba(0,0,0,0.6)",
             fontSize: 13, fontFamily: "'Sora', sans-serif", fontWeight: 600,
             display: "flex", alignItems: "center", gap: 7,
             animation: isListening ? "pulse-ring 1.2s infinite" : "none", transition: "all 0.2s",
@@ -313,8 +313,8 @@ export default function PolyPane() {
       </div>
       <div style={{ padding: "12px 32px 0" }}>
         <p style={{ margin: 0, fontSize: 12, color: "rgba(255,255,255,0.2)" }}>
-          💡 Click <strong style={{ color: "rgba(255,255,255,0.35)" }}>✏️ Type here</strong> on any window to use it as input &nbsp;·&nbsp;
-          Powered by <strong style={{ color: "rgba(255,255,255,0.35)" }}>MyMemory</strong> — free forever, no sign-up
+          💡 Click <strong style={{ color: "rgba(0,0,0,0.45)" }}>✏️ Type here</strong> on any window to use it as input &nbsp;·&nbsp;
+          Powered by <strong style={{ color: "rgba(0,0,0,0.45)" }}>MyMemory</strong> — free forever, no sign-up
         </p>
       </div>
       <div style={{
