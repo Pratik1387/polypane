@@ -105,7 +105,7 @@ function LanguageSelector({ current, onSelect, usedCodes, isInput }) {
           display: "flex", alignItems: "center", gap: 8,
           background: "rgba(0,0,0,0.85)", border: `1.5px solid ${lang.color}44`,
           borderRadius: 10, padding: "6px 12px", cursor: "pointer",
-          color: "#fff", fontSize: 13, fontFamily: "'Sora', sans-serif",
+          color: "#000", fontSize: 13, fontFamily: "'Sora', sans-serif",
           transition: "all 0.2s",
         }}
       >
@@ -236,7 +236,7 @@ function LangWindow({ win, windows, inputText, onLangChange, onSetInput, onTextC
             ) : (
               <>
                 <p style={{
-                  color: "#fff", fontSize: 16, lineHeight: 1.7,
+                  color: "#000", fontSize: 16, lineHeight: 1.7,
                   fontFamily: "'Sora', sans-serif", margin: 0,
                 }}>
                   {displayText || <span style={{ color: "rgba(0,0,0,0.85)" }}>Translation appears here...</span>}
@@ -368,7 +368,7 @@ export default function PolyPane() {
     <div style={{
       minHeight: "100vh",
       background: "linear-gradient(135deg, #0d0d1a 0%, #0f0f23 50%, #0d1a0f 100%)",
-      fontFamily: "'Sora', sans-serif",
+      fontFamily: "'Space Grotesk', sans-serif",
       padding: "0 0 40px",
     }}>
       <style>{`
@@ -408,7 +408,7 @@ export default function PolyPane() {
           }}>
             PolyPane
           </h1>
-          <p style={{ margin: "4px 0 0", fontSize: 13, color: "rgba(255,255,255,0.35)", letterSpacing: 0.3 }}>
+          <p style={{ margin: "4px 0 0", fontSize: 13, color: "rgba(19, 17, 17, 0.94)", letterSpacing: 0.3 }}>
             Type once. See 4 languages instantly.
           </p>
         </div>
