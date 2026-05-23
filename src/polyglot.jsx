@@ -1,0 +1,483 @@
+import { useState, useRef, useEffect, useCallback } from "react";
+
+const LANGUAGES = [
+  { code: "en", name: "English", flag: "🇬🇧", color: "#3B82F6", bcp: "en-US" },
+  { code: "hi", name: "Hindi", flag: "🇮🇳", color: "#F59E0B", bcp: "hi-IN" },
+  { code: "fr", name: "French", flag: "🇫🇷", color: "#EF4444", bcp: "fr-FR" },
+  { code: "es", name: "Spanish", flag: "🇪🇸", color: "#10B981", bcp: "es-ES" },
+  { code: "mr", name: "Marathi", flag: "🇮🇳", color: "#8B5CF6", bcp: "mr-IN" },
+  { code: "de", name: "German", flag: "🇩🇪", color: "#EC4899", bcp: "de-DE" },
+  { code: "ja", name: "Japanese", flag: "🇯🇵", color: "#F97316", bcp: "ja-JP" },
+  { code: "zh", name: "Chinese", flag: "🇨🇳", color: "#06B6D4", bcp: "zh-CN" },
+  { code: "ar", name: "Arabic", flag: "🇸🇦", color: "#84CC16", bcp: "ar-SA" },
+  { code: "pt", name: "Portuguese", flag: "🇧🇷", color: "#A78BFA", bcp: "pt-BR" },
+  { code: "ru", name: "Russian", flag: "🇷🇺", color: "#FB923C", bcp: "ru-RU" },
+  { code: "ko", name: "Korean", flag: "🇰🇷", color: "#34D399", bcp: "ko-KR" },
+];
+
+const INITIAL_WINDOWS = [
+  { id: 1, langCode: "en", isInput: true },
+  { id: 2, langCode: "mr", isInput: false },
+  { id: 3, langCode: "fr", isInput: false },
+  { id: 4, langCode: "es", isInput: false },
+];
+
+function getLang(code) {
+  return LANGUAGES.find((l) => l.code === code) || LANGUAGES[0];
+}
+
+async function translateText(text, targetLang, sourceLang = "en") {
+  if (!text.trim()) return { translation: "", pronunciation: "" };
+  if (targetLang === sourceLang) return { translation: text, pronunciation: "" };
+
+  const langName = getLang(targetLang).name;
+  const sourceName = getLang(sourceLang).name;
+
+  const response = await fetch(
+  `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${import.meta.env.VITE_GEMINI_API_KEY}`,
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      contents: [
+        {
+          parts: [
+            {
+              text: `Translate the following ${sourceName} text to ${langName}.
+
+Return ONLY a JSON object with exactly these two fields:
+- "translation"
+- "pronunciation"
+
+If pronunciation is not needed, return "".
+
+Text to translate:
+"${text}"`
+            }
+          ]
+        }
+      ]
+    })
+  }
+);
+
+const data = await response.json();
+
+const raw =
+  data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+  '{"translation":"","pronunciation":""}';
+
+try {
+
+  const clean = raw.replace(/```json|```/g, "").trim();
+
+  return JSON.parse(clean);
+
+} catch {
+
+  return {
+    translation: raw,
+    pronunciation: ""
+  };
+
+}
+
+function speak(text, bcp) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.lang = bcp;
+  utt.rate = 0.85;
+  window.speechSynthesis.speak(utt);
+}
+
+function LanguageSelector({ current, onSelect, usedCodes, isInput }) {
+  const [open, setOpen] = useState(false);
+  const lang = getLang(current);
+
+  return (
+    <div style={{ position: "relative" }}>
+      <button
+        onClick={() => setOpen(!open)}
+        style={{
+          display: "flex", alignItems: "center", gap: 8,
+          background: "rgba(255,255,255,0.08)", border: `1.5px solid ${lang.color}44`,
+          borderRadius: 10, padding: "6px 12px", cursor: "pointer",
+          color: "#fff", fontSize: 13, fontFamily: "'Sora', sans-serif",
+          transition: "all 0.2s",
+        }}
+      >
+        <span style={{ fontSize: 18 }}>{lang.flag}</span>
+        <span style={{ color: lang.color, fontWeight: 600 }}>{lang.name}</span>
+        <span style={{ fontSize: 10, opacity: 0.5 }}>▼</span>
+      </button>
+      {open && (
+        <div style={{
+          position: "absolute", top: "calc(100% + 6px)", left: 0, zIndex: 100,
+          background: "#1a1a2e", border: "1px solid rgba(255,255,255,0.1)",
+          borderRadius: 12, padding: 6, minWidth: 170,
+          boxShadow: "0 20px 60px rgba(0,0,0,0.6)",
+          maxHeight: 280, overflowY: "auto",
+        }}>
+          {LANGUAGES.map((l) => {
+            const disabled = usedCodes.includes(l.code) && l.code !== current;
+            return (
+              <button
+                key={l.code}
+                disabled={disabled}
+                onClick={() => { onSelect(l.code); setOpen(false); }}
+                style={{
+                  display: "flex", alignItems: "center", gap: 10,
+                  width: "100%", background: l.code === current ? `${l.color}22` : "transparent",
+                  border: "none", borderRadius: 8, padding: "8px 10px",
+                  cursor: disabled ? "not-allowed" : "pointer",
+                  color: disabled ? "rgba(255,255,255,0.25)" : "#fff",
+                  fontSize: 13, fontFamily: "'Sora', sans-serif", textAlign: "left",
+                  transition: "background 0.15s",
+                }}
+              >
+                <span>{l.flag}</span>
+                <span style={{ color: disabled ? "rgba(255,255,255,0.25)" : l.color, fontWeight: 600 }}>{l.name}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function LangWindow({ win, windows, inputText, onLangChange, onSetInput, onTextChange, translations, loading }) {
+  const lang = getLang(win.langCode);
+  const usedCodes = windows.map((w) => w.langCode);
+  const isInput = win.isInput;
+  const result = translations[win.id] || { translation: "", pronunciation: "" };
+  const displayText = isInput ? inputText : result.translation;
+
+  return (
+    <div style={{
+      background: "rgba(255,255,255,0.03)",
+      border: `1.5px solid ${lang.color}33`,
+      borderRadius: 18,
+      display: "flex", flexDirection: "column",
+      overflow: "hidden", flex: 1, minWidth: 0,
+      boxShadow: isInput ? `0 0 30px ${lang.color}22` : "none",
+      transition: "box-shadow 0.3s",
+      position: "relative",
+    }}>
+      {/* Header */}
+      <div style={{
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        padding: "14px 16px",
+        borderBottom: `1px solid ${lang.color}22`,
+        background: `linear-gradient(135deg, ${lang.color}11 0%, transparent 100%)`,
+      }}>
+        <LanguageSelector
+          current={win.langCode}
+          onSelect={(code) => onLangChange(win.id, code)}
+          usedCodes={usedCodes}
+          isInput={isInput}
+        />
+        <div style={{ display: "flex", gap: 6 }}>
+          {!isInput && (
+            <button
+              onClick={() => onSetInput(win.id)}
+              title="Set as input"
+              style={{
+                background: `${lang.color}22`, border: `1px solid ${lang.color}44`,
+                borderRadius: 7, padding: "4px 9px", cursor: "pointer",
+                color: lang.color, fontSize: 11, fontFamily: "'Sora', sans-serif",
+                fontWeight: 600,
+              }}
+            >
+              ✏️ Type here
+            </button>
+          )}
+          {isInput && (
+            <span style={{
+              background: `${lang.color}22`, border: `1px solid ${lang.color}55`,
+              borderRadius: 7, padding: "4px 9px",
+              color: lang.color, fontSize: 11, fontFamily: "'Sora', sans-serif",
+              fontWeight: 700, letterSpacing: 0.5,
+            }}>INPUT</span>
+          )}
+        </div>
+      </div>
+
+      {/* Text area */}
+      <div style={{ flex: 1, position: "relative", padding: 16 }}>
+        {isInput ? (
+          <textarea
+            value={inputText}
+            onChange={(e) => onTextChange(e.target.value)}
+            placeholder={`Type in ${lang.name}...`}
+            style={{
+              width: "100%", height: "100%", minHeight: 120,
+              background: "transparent", border: "none", outline: "none",
+              color: "#fff", fontSize: 16, fontFamily: "'Sora', sans-serif",
+              resize: "none", lineHeight: 1.7,
+              "::placeholder": { color: "rgba(255,255,255,0.2)" },
+            }}
+          />
+        ) : (
+          <div style={{ minHeight: 120 }}>
+            {loading[win.id] ? (
+              <div style={{ display: "flex", gap: 6, alignItems: "center", padding: "10px 0" }}>
+                {[0, 1, 2].map((i) => (
+                  <div key={i} style={{
+                    width: 8, height: 8, borderRadius: "50%",
+                    background: lang.color,
+                    animation: `bounce 1.2s ${i * 0.2}s infinite ease-in-out`,
+                  }} />
+                ))}
+              </div>
+            ) : (
+              <>
+                <p style={{
+                  color: "#fff", fontSize: 16, lineHeight: 1.7,
+                  fontFamily: "'Sora', sans-serif", margin: 0,
+                }}>
+                  {displayText || <span style={{ color: "rgba(255,255,255,0.2)" }}>Translation appears here...</span>}
+                </p>
+                {result.pronunciation && (
+                  <p style={{
+                    color: lang.color, fontSize: 13, lineHeight: 1.6,
+                    fontFamily: "'Sora', sans-serif", margin: "10px 0 0",
+                    fontStyle: "italic", opacity: 0.85,
+                  }}>
+                    🔤 {result.pronunciation}
+                  </p>
+                )}
+              </>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Footer: speaker */}
+      {displayText && !loading[win.id] && (
+        <div style={{
+          padding: "10px 16px",
+          borderTop: `1px solid ${lang.color}1a`,
+          display: "flex", justifyContent: "flex-end",
+        }}>
+          <button
+            onClick={() => speak(displayText, lang.bcp)}
+            title={`Listen in ${lang.name}`}
+            style={{
+              background: `${lang.color}22`, border: `1px solid ${lang.color}55`,
+              borderRadius: 8, padding: "6px 14px", cursor: "pointer",
+              color: lang.color, fontSize: 13, fontFamily: "'Sora', sans-serif",
+              fontWeight: 600, display: "flex", alignItems: "center", gap: 6,
+              transition: "all 0.2s",
+            }}
+          >
+            🔊 Listen
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function PolyPane() {
+  const [windows, setWindows] = useState(INITIAL_WINDOWS);
+  const [inputText, setInputText] = useState("");
+  const [translations, setTranslations] = useState({});
+  const [loading, setLoading] = useState({});
+  const [isListening, setIsListening] = useState(false);
+  const debounceRef = useRef(null);
+  const recognitionRef = useRef(null);
+
+  const inputWindow = windows.find((w) => w.isInput);
+  const outputWindows = windows.filter((w) => !w.isInput);
+
+  const runTranslations = useCallback(async (text, inputLang) => {
+    if (!text.trim()) { setTranslations({}); return; }
+    const targets = windows.filter((w) => !w.isInput);
+    const newLoading = {};
+    targets.forEach((w) => { newLoading[w.id] = true; });
+    setLoading(newLoading);
+
+    await Promise.all(
+      targets.map(async (w) => {
+        const result = await translateText(text, w.langCode, inputLang);
+        setTranslations((prev) => ({ ...prev, [w.id]: result }));
+        setLoading((prev) => ({ ...prev, [w.id]: false }));
+      })
+    );
+  }, [windows]);
+
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      runTranslations(inputText, inputWindow?.langCode || "en");
+    }, 700);
+    return () => clearTimeout(debounceRef.current);
+  }, [inputText, inputWindow?.langCode]);
+
+  const handleLangChange = (id, code) => {
+    setWindows((prev) => prev.map((w) => w.id === id ? { ...w, langCode: code } : w));
+    setTranslations({});
+    if (inputText.trim()) {
+      setTimeout(() => runTranslations(inputText, inputWindow?.langCode || "en"), 100);
+    }
+  };
+
+  const handleSetInput = (id) => {
+    setWindows((prev) => prev.map((w) => ({ ...w, isInput: w.id === id })));
+    setInputText("");
+    setTranslations({});
+  };
+
+  const handleVoice = () => {
+    if (!("webkitSpeechRecognition" in window || "SpeechRecognition" in window)) {
+      alert("Voice input not supported in this browser. Try Chrome.");
+      return;
+    }
+    if (isListening) {
+      recognitionRef.current?.stop();
+      setIsListening(false);
+      return;
+    }
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const rec = new SR();
+    recognitionRef.current = rec;
+    rec.lang = getLang(inputWindow?.langCode || "en").bcp;
+    rec.continuous = false;
+    rec.interimResults = false;
+    rec.onresult = (e) => {
+      const transcript = e.results[0][0].transcript;
+      setInputText(transcript);
+      setIsListening(false);
+    };
+    rec.onerror = () => setIsListening(false);
+    rec.onend = () => setIsListening(false);
+    rec.start();
+    setIsListening(true);
+  };
+
+  const handleClear = () => {
+    setInputText("");
+    setTranslations({});
+  };
+
+  return (
+    <div style={{
+      minHeight: "100vh",
+      background: "linear-gradient(135deg, #0d0d1a 0%, #0f0f23 50%, #0d1a0f 100%)",
+      fontFamily: "'Sora', sans-serif",
+      padding: "0 0 40px",
+    }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Space+Grotesk:wght@400;600&display=swap');
+        @keyframes bounce {
+          0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+          40% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(12px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse-ring {
+          0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); }
+          70% { box-shadow: 0 0 0 12px rgba(239,68,68,0); }
+          100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); }
+        }
+        * { box-sizing: border-box; }
+        textarea::placeholder { color: rgba(255,255,255,0.2) !important; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+      `}</style>
+
+      {/* Header */}
+      <div style={{
+        padding: "28px 32px 20px",
+        borderBottom: "1px solid rgba(255,255,255,0.06)",
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        animation: "fadeIn 0.5s ease",
+      }}>
+        <div>
+          <h1 style={{
+            margin: 0, fontSize: 28, fontWeight: 800, letterSpacing: -0.5,
+            background: "linear-gradient(90deg, #3B82F6, #8B5CF6, #EC4899)",
+            WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+          }}>
+            PolyPane
+          </h1>
+          <p style={{ margin: "4px 0 0", fontSize: 13, color: "rgba(255,255,255,0.35)", letterSpacing: 0.3 }}>
+            Type once. See 4 languages instantly.
+          </p>
+        </div>
+
+        {/* Voice + Clear */}
+        <div style={{ display: "flex", gap: 10 }}>
+          {inputText && (
+            <button onClick={handleClear} style={{
+              background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)",
+              borderRadius: 10, padding: "8px 16px", cursor: "pointer",
+              color: "rgba(255,255,255,0.5)", fontSize: 13, fontFamily: "'Sora', sans-serif",
+            }}>
+              ✕ Clear
+            </button>
+          )}
+          <button
+            onClick={handleVoice}
+            title="Voice input"
+            style={{
+              background: isListening ? "rgba(239,68,68,0.15)" : "rgba(255,255,255,0.05)",
+              border: isListening ? "1.5px solid #EF4444" : "1px solid rgba(255,255,255,0.1)",
+              borderRadius: 10, padding: "8px 18px", cursor: "pointer",
+              color: isListening ? "#EF4444" : "rgba(255,255,255,0.6)",
+              fontSize: 13, fontFamily: "'Sora', sans-serif", fontWeight: 600,
+              display: "flex", alignItems: "center", gap: 7,
+              animation: isListening ? "pulse-ring 1.2s infinite" : "none",
+              transition: "all 0.2s",
+            }}
+          >
+            {isListening ? "⏹ Stop" : "🎤 Speak"}
+          </button>
+        </div>
+      </div>
+
+      {/* Subtitle tip */}
+      <div style={{ padding: "12px 32px 0", animation: "fadeIn 0.6s ease" }}>
+        <p style={{ margin: 0, fontSize: 12, color: "rgba(255,255,255,0.2)" }}>
+          💡 Click <strong style={{ color: "rgba(255,255,255,0.35)" }}>✏️ Type here</strong> on any window to switch your input language &nbsp;·&nbsp; 🔊 Click <strong style={{ color: "rgba(255,255,255,0.35)" }}>Listen</strong> to hear pronunciation
+        </p>
+      </div>
+
+      {/* Windows grid */}
+      <div style={{
+        display: "flex", gap: 16, padding: "20px 32px 0",
+        alignItems: "stretch", animation: "fadeIn 0.7s ease",
+        flexWrap: "wrap",
+      }}>
+        {windows.map((win) => (
+          <div key={win.id} style={{ flex: "1 1 220px", minWidth: 0, display: "flex" }}>
+            <LangWindow
+              win={win}
+              windows={windows}
+              inputText={inputText}
+              onLangChange={handleLangChange}
+              onSetInput={handleSetInput}
+              onTextChange={setInputText}
+              translations={translations}
+              loading={loading}
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* Footer */}
+      <div style={{ padding: "24px 32px 0", textAlign: "center" }}>
+        <p style={{ margin: 0, fontSize: 11, color: "rgba(255,255,255,0.15)", letterSpacing: 0.5 }}>
+          POLYPANE · Inspired by PhoneArena's comparison UI · Built with Claude AI
+        </p>
+      </div>
+    </div>
+  );
+}
