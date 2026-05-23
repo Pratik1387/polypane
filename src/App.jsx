@@ -264,8 +264,8 @@ export default function PolyPane() {
   return (
     <div style={{
       minHeight: "100vh",
-      background: "linear-gradient(135deg, #0d0d1a 0%, #0f0f23 50%, #0d1a0f 100%)",
-      fontFamily: "'Sora', sans-serif", padding: "0 0 40px",
+      background: "linear-gradient(135deg, #F2F0EF 0%, #E8E5E0 50%, #EDF2EE 100%)",
+      fontFamily: "'Space Grotesk', sans-serif", padding: "0 0 40px",
     }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&display=swap');
