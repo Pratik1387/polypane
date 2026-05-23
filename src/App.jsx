@@ -160,7 +160,7 @@ function LangWindow({ win, windows, inputText, onLangChange, onSetInput, onTextC
             placeholder={`Type in ${lang.name}...`}
             style={{
               width: "100%", height: "100%", minHeight: 120, background: "transparent",
-              border: "none", outline: "none", color: "#fff", fontSize: 16,
+              border: "none", outline: "none", color: "#0c0c0c", fontSize: 16,
               fontFamily: "'Space Grotesk', sans-serif", resize: "none", lineHeight: 1.7,
             }} />
         ) : loading[win.id] ? (
@@ -174,7 +174,7 @@ function LangWindow({ win, windows, inputText, onLangChange, onSetInput, onTextC
           </div>
         ) : (
           <>
-            <p style={{ color: "#fff", fontSize: 16, lineHeight: 1.7, fontFamily: "'Space Grotesk', sans-serif", margin: 0 }}>
+            <p style={{ color: "#1A1A2E", fontSize: 16, lineHeight: 1.7, fontFamily: "'Space Grotesk', sans-serif", margin: 0 }}>
               {displayText || <span style={{ color: "rgba(0,0,0,0.25)" }}>Translation appears here...</span>}
             </p>
             {result.pronunciation && (
@@ -276,7 +276,7 @@ export default function PolyPane() {
         textarea{caret-color:#1A1A2E}
         textarea::placeholder{color:rgba(0,0,0,0.25)!important}
         ::-webkit-scrollbar{width:4px}
-        ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:4px}
+        ::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:4px}
       `}</style>
       <div style={{
         padding: "28px 32px 20px", borderBottom: "1px solid rgba(0,0,0,0.08)",
