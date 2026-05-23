@@ -82,7 +82,7 @@ function LanguageSelector({ current, onSelect, usedCodes }) {
         display: "flex", alignItems: "center", gap: 8,
         background: "rgba(255,255,255,0.08)", border: `1.5px solid ${lang.color}44`,
         borderRadius: 10, padding: "6px 12px", cursor: "pointer",
-        color: "#1A1A2E", fontSize: 13, fontFamily: "'Sora', sans-serif", transition: "all 0.2s",
+        color: "#1A1A2E", fontSize: 13, fontFamily: "'Space Grotesk', sans-serif", transition: "all 0.2s",
       }}>
         <span style={{ fontSize: 18 }}>{lang.flag}</span>
         <span style={{ color: lang.color, fontWeight: 600 }}>{lang.name}</span>
@@ -105,11 +105,11 @@ function LanguageSelector({ current, onSelect, usedCodes }) {
                   background: l.code === current ? `${l.color}22` : "transparent",
                   border: "none", borderRadius: 8, padding: "8px 10px",
                   cursor: disabled ? "not-allowed" : "pointer",
-                  color: disabled ? "rgba(255,255,255,0.25)" : "#fff",
-                  fontSize: 13, fontFamily: "'Sora', sans-serif", textAlign: "left",
+                  color: disabled ? "rgba(0,0,0,0.25)" : "#1A1A2E",
+                  fontSize: 13, fontFamily: "'Space Grotesk', sans-serif", textAlign: "left",
                 }}>
                 <span>{l.flag}</span>
-                <span style={{ color: disabled ? "rgba(255,255,255,0.25)" : l.color, fontWeight: 600 }}>{l.name}</span>
+                <span style={{ color: disabled ? "rgba(0,0,0,0.25)" : l.color, fontWeight: 600 }}>{l.name}</span>
               </button>
             );
           })}
@@ -143,13 +143,13 @@ function LangWindow({ win, windows, inputText, onLangChange, onSetInput, onTextC
             <button onClick={() => onSetInput(win.id)} style={{
               background: `${lang.color}22`, border: `1px solid ${lang.color}44`,
               borderRadius: 7, padding: "4px 9px", cursor: "pointer",
-              color: lang.color, fontSize: 11, fontFamily: "'Sora', sans-serif", fontWeight: 600,
+              color: lang.color, fontSize: 11, fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600,
             }}>✏️ Type here</button>
           ) : (
             <span style={{
               background: `${lang.color}22`, border: `1px solid ${lang.color}55`,
               borderRadius: 7, padding: "4px 9px", color: lang.color,
-              fontSize: 11, fontFamily: "'Sora', sans-serif", fontWeight: 700, letterSpacing: 0.5,
+              fontSize: 11, fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, letterSpacing: 0.5,
             }}>INPUT</span>
           )}
         </div>
@@ -161,7 +161,7 @@ function LangWindow({ win, windows, inputText, onLangChange, onSetInput, onTextC
             style={{
               width: "100%", height: "100%", minHeight: 120, background: "transparent",
               border: "none", outline: "none", color: "#fff", fontSize: 16,
-              fontFamily: "'Sora', sans-serif", resize: "none", lineHeight: 1.7,
+              fontFamily: "'Space Grotesk', sans-serif", resize: "none", lineHeight: 1.7,
             }} />
         ) : loading[win.id] ? (
           <div style={{ display: "flex", gap: 6, alignItems: "center", paddingTop: 10 }}>
@@ -174,13 +174,13 @@ function LangWindow({ win, windows, inputText, onLangChange, onSetInput, onTextC
           </div>
         ) : (
           <>
-            <p style={{ color: "#fff", fontSize: 16, lineHeight: 1.7, fontFamily: "'Sora', sans-serif", margin: 0 }}>
-              {displayText || <span style={{ color: "rgba(255,255,255,0.2)" }}>Translation appears here...</span>}
+            <p style={{ color: "#fff", fontSize: 16, lineHeight: 1.7, fontFamily: "'Space Grotesk', sans-serif", margin: 0 }}>
+              {displayText || <span style={{ color: "rgba(0,0,0,0.25)" }}>Translation appears here...</span>}
             </p>
             {result.pronunciation && (
               <p style={{
                 color: lang.color, fontSize: 12, lineHeight: 1.6,
-                fontFamily: "'Sora', sans-serif", margin: "10px 0 0", fontStyle: "italic", opacity: 0.75,
+                fontFamily: "'Space Grotesk', sans-serif", margin: "10px 0 0", fontStyle: "italic", opacity: 0.75,
               }}>🔤 {result.pronunciation}</p>
             )}
           </>
@@ -194,7 +194,7 @@ function LangWindow({ win, windows, inputText, onLangChange, onSetInput, onTextC
           <button onClick={() => speak(displayText, lang.bcp)} style={{
             background: `${lang.color}22`, border: `1px solid ${lang.color}55`,
             borderRadius: 8, padding: "6px 14px", cursor: "pointer",
-            color: lang.color, fontSize: 13, fontFamily: "'Sora', sans-serif",
+            color: lang.color, fontSize: 13, fontFamily: "'Space Grotesk', sans-serif",
             fontWeight: 600, display: "flex", alignItems: "center", gap: 6,
           }}>🔊 Listen</button>
         </div>
@@ -297,7 +297,7 @@ export default function PolyPane() {
             <button onClick={() => { setInputText(""); setTranslations({}); }} style={{
               background: "rgba(0,0,0,0.04)", border: "1px solid rgba(0,0,0,0.1)",
               borderRadius: 10, padding: "8px 16px", cursor: "pointer",
-              color: "rgba(0,0,0,0.5)", fontSize: 13, fontFamily: "'Sora', sans-serif",
+              color: "rgba(0,0,0,0.5)", fontSize: 13, fontFamily: "'Space Grotesk', sans-serif",
             }}>✕ Clear</button>
           )}
           <button onClick={handleVoice} style={{
@@ -305,14 +305,14 @@ export default function PolyPane() {
             border: isListening ? "1.5px solid #EF4444" : "1px solid rgba(255,255,255,0.1)",
             borderRadius: 10, padding: "8px 18px", cursor: "pointer",
             color: isListening ? "#EF4444" : "rgba(0,0,0,0.6)",
-            fontSize: 13, fontFamily: "'Sora', sans-serif", fontWeight: 600,
+            fontSize: 13, fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600,
             display: "flex", alignItems: "center", gap: 7,
             animation: isListening ? "pulse-ring 1.2s infinite" : "none", transition: "all 0.2s",
           }}>{isListening ? "⏹ Stop" : "🎤 Speak"}</button>
         </div>
       </div>
       <div style={{ padding: "12px 32px 0" }}>
-        <p style={{ margin: 0, fontSize: 12, color: "rgba(255,255,255,0.2)" }}>
+        <p style={{ margin: 0, fontSize: 12, color: "rgba(0,0,0,0.25)" }}>
           💡 Click <strong style={{ color: "rgba(0,0,0,0.45)" }}>✏️ Type here</strong> on any window to use it as input &nbsp;·&nbsp;
           Powered by <strong style={{ color: "rgba(0,0,0,0.45)" }}>MyMemory</strong> — free forever, no sign-up
         </p>
